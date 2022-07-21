@@ -9,25 +9,36 @@ import { PaisService } from '../../services/pais.service';
 })
 export class PorRegionComponent implements OnInit {
 
+  regiones: string[] = ['africa', 'americas', 'asia', 'europe', 'oceania'];
+  regionActiva: string = '';
+
   termino: string = '';
   hayError: boolean = false;
   paises: Country[] = [];
-  
+
   constructor(private paisService: PaisService) { }
 
   ngOnInit(): void {
   }
 
-  
-  buscar(event:string){
+  activarRegion(region: string) {
+    if (this.regionActiva !== region) {
+      this.regionActiva = region;
+      this.paises = [];
+      this.buscar(this.regionActiva);
+    }
+
+  }
+
+  buscar(event: string) {
     this.hayError = false;
     this.termino = event;
 
-    if (this.termino != ''){
+    if (this.termino != '') {
       this.paisService.buscarRegion(this.termino).subscribe({
-      
+
         next: (paises) => {
-          this.paises=paises
+          this.paises = paises
         },
         error: (err) => {
           this.hayError = true;
@@ -35,10 +46,16 @@ export class PorRegionComponent implements OnInit {
         }
       });
     }
-    
+
+
+
   }
 
-  sugerencias(termino: string){
+  getClasCSS(region: string): string {
+    return (region === this.regionActiva) ? 'btn btn-primary' : 'btn btn-outline-primary'
+  }
+
+  sugerencias(termino: string) {
     this.hayError = false;
   }
 
